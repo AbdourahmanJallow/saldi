@@ -36,6 +36,7 @@ include("../includes/var_def.php");
 include("../includes/connect.php");
 include("../includes/online.php");
 include("../includes/std_func.php");
+include_once '../includes/topline_settings.php';
 
 global $csv;
 global $db;
@@ -44,6 +45,8 @@ global $md, $menu;
 global $top_bund;
 global $bgcolor, $bgcolor4, $bgcolor5;
 global $sprog_id;
+global $topStyle;
+global $buttonStyle;
 
 $regnaar = "";
 $maaned_fra = "";
@@ -306,14 +309,59 @@ if ($menu == 'T') {
     include_once '../includes/top_header.php';
     include_once '../includes/top_menu.php';
     print "<div id=\"header\">";
-    print "<div class=\"headerbtnLft headLink\"><a href=rapport.php?rapportart=kontokort&regnaar=$regnaar&dato_fra=$startdato&maaned_fra=$mf&aar_fra=$aar_fra&dato_til=$slutdato&maaned_til=$mt&aar_til=$aar_til&konto_fra=$konto_fra&konto_til=$konto_til&ansat_fra=&ansat_til=&projekt_fra=&projekt_til=&simulering=&lagerbev= accesskey=L title='Klik her for at komme tilbage'><i class='fa fa-close fa-lg'></i> &nbsp;" . findtekst('30|Tilbage', $sprog_id) . "</a></div>"; // &ansat_fra=$ansat_fra&ansat_til=$ansat_til&afd=$afd&projekt_fra=$projekt_fra&projekt_til=$projekt_til&simulering=$simulering&lagerbev=$lagerbev
+    print "<div class=\"headerbtnLft headLink\"><a href=\"rapport.php?rapportart=regnskabbasis&regnaar=$regnaar&maaned_fra=$mf&aar_fra=$aar_fra&maaned_til=$mt&aar_til=$aar_til&dato_fra=$startdato&dato_til=$slutdato&konto_fra=$konto_fra&konto_til=$konto_til\" accesskey=L title='Klik her for at komme tilbage'><i class='fa fa-close fa-lg'></i> &nbsp;" . findtekst('30|Tilbage', $sprog_id) . "</a></div>"; // &ansat_fra=$ansat_fra&ansat_til=$ansat_til&afd=$afd&projekt_fra=$projekt_fra&projekt_til=$projekt_til&simulering=$simulering&lagerbev=$lagerbev
     print "<div class=\"headerTxt\">$title</div>";
     print "<div class=\"headerbtnRght headLink\">&nbsp;&nbsp;&nbsp;</div>";
     print "</div>";
     print "<div class='content-noside'>";
     print "<table class='dataTable' border='0' cellspacing='1' width='100%'>";
 } elseif ($menu == 'S') {
-    include("../includes/sidemenu.php");
+    $backUrl = "rapport.php?rapportart=regnskabbasis&regnaar=$regnaar&maaned_fra=$mf&aar_fra=$aar_fra&maaned_til=$mt&aar_til=$aar_til&dato_fra=$startdato&dato_til=$slutdato&konto_fra=$konto_fra&konto_til=$konto_til";
+    
+    $tilbage_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l-4 4 4 4M16 12H9"/></svg>';
+    
+    // Get CVR number
+    $query = db_select("select cvrnr from adresser where art='S'", __FILE__ . " linje " . __LINE__);
+    if ($row = db_fetch_array($query))
+        $cvrnr = $row['cvrnr'];
+    
+    // STICKY HEADER - Close button, title, empty space
+    print "<div style=\"position: sticky; top: 0; z-index: 100;\">";
+    print "<table bgcolor='#eeeef0' width='100%' cellpadding='0' cellspacing='4' border='0'><tbody>";
+    print "<tr>";
+    print "<td width=\"5%\" align='center'><a href=\"javascript:confirmClose('$backUrl','')\" accesskey=L style=\"text-decoration: none;\">";
+    print "<button class='headerbtn' type='button' style='$buttonStyle; width: 100%; display: flex; align-items: center; gap: 5px;' onMouseOver=\"this.style.cursor = 'pointer'\">";
+    print "$tilbage_icon " . findtekst('30|Tilbage', $sprog_id) . "</button></a></td>";
+    print "<td width='75%' align='center' style='$topStyle'>" . findtekst('895|Finansrapport', $sprog_id) . "</td>";
+    print "<td width='5%' align='center' style='$topStyle'>&nbsp;</td>";
+    print "</tr>";
+    print "</tbody></table>";
+    print "</div>";
+    
+    // Format dates
+    if ($startdato < 10) $startdato_fmt = "0" . (int)$startdato;
+    else $startdato_fmt = $startdato;
+    if ($slutdato < 10) $slutdato_fmt = "0" . (int)$slutdato;
+    else $slutdato_fmt = $slutdato;
+    
+    // NON-STICKY INFO SECTION - Left side: title & CVR, Right side: year & period
+    print "<table width='100%' cellpadding='4' cellspacing='0' border='0'>";
+    print "<tr>";
+    print "<td width='50%' valign='top'>";
+    print "<div class='saftTitle'>" . $newTitle . "</div>";
+    print "<div style='margin-top: 5px;' class='saftFirmName'>cvr: $cvrnr | $firmanavn</div>";
+    print "</td>";
+    print "<td width='50%' align='right' valign='top'>";
+    print "<div style='margin: 5px 4px 0 0;'>Regnskabsår: $regnaar</div>";
+    print "<div style='margin: 5px 4px 0 0;'>Periode: $startdato_fmt/$mf $aar_fra - $slutdato_fmt/$mt $aar_til</div>";
+    print "</td>";
+    print "</tr>";
+    print "<tr><td colspan='2'><hr></td></tr>";
+    print "</table>";
+    
+    // Scrollable data table
+    print "<div style=\"overflow-y: auto; max-height: calc(100vh - 128px);\">";
+    print "<table class='dataTable' border='0' cellspacing='1' width='100%'>";
 } else {
     print "<table width=100% cellpadding=\"0\" cellspacing=\"1px\" border=\"0\" valign = \"top\" align='center'> ";
     print "<tr><td height=\"8\" colspan=\"2\">";
@@ -325,26 +373,25 @@ if ($menu == 'T') {
     print "</td></tr>";
 }
 
-print "<table class=\"saftHeader\">\n";
-print "<tr><td rowspan=\"3\" class=\"saftTitle\">$newTitle</td><td>".findtekst('778|Regnskabsår', $sprog_id)."</td><td>$regnaar.</td></tr>\n";
-if ($startdato < 10)
-    $startdato = "0" . $startdato * 1;
-print "<tr><td rowspan=\"2\">".findtekst('899|Periode', $sprog_id)."</td><td>".ucfirst(findtekst('903|fra', $sprog_id))." " . $startdato . ". $mf $aar_fra</td></tr>\n";
-print "<tr><td>".ucfirst(findtekst('904|til', $sprog_id))." " . $slutdato . ". $mt $aar_til</td></tr>";
-print "<tr><td colspan=\"3\" class=\"saftFirmName\">$firmanavn</td>\n";
-if ($standardKontoCheck != true) {
-    print "<tr><td colspan=\"3\"><hr></td></tr>";
-    print "<tr><td colspan=\"3\"><h2>" . findtekst('2328|Bemærk!', $sprog_id) . "<h2></td></tr>";
+// Display warning messages only in S-mode
+if ($menu == 'S' && $standardKontoCheck != true) {
+    print "<div style=\"margin: 10px 0;\">";
+    print "<h2>" . findtekst('2328|Bemærk!', $sprog_id) . "</h2>";
     if ($kontoantal_check <= 1) {
-        print "<tr><td colspan=\"3\" style=\"padding-bottom:5px;\">" . findtekst('2329|For at udskrive en csv skal nedenstående kontonummer mappes til <u>standard kontonummer</u>.', $sprog_id) . "</td></tr>"; // For at udskrive en csv skal nedenstående kontonummer mappes til standard kontonummer.
+        print "<p>" . findtekst('2329|For at udskrive en csv skal nedenstående kontonummer mappes til <u>standard kontonummer</u>.', $sprog_id) . "</p>";
     } else {
-        print "<tr><td colspan=\"3\" style=\"padding-bottom:5px;\">" . findtekst('2330|For at udskrive en csv skal de', $sprog_id) . " <b>$kontoantal_check</b> " . findtekst('2331|nedenstående kontonumre mappes til <u>standard kontonumre</u>.', $sprog_id) . "</td></tr>"; // For at udskrive en csv skal de <b>$kontoantal_check</b> nedenstående kontonumre mappes til <u>standard kontonumre</u>.
-   }
-    print "<tr><td colspan=\"3\" style=\"padding-bottom:5px;\">" . findtekst('2332|Inde i', $sprog_id) . " <mark class=\"mark\"><b>" . findtekst('2333|systemdata &#8658 > diverse &#8658 > Import & Export', $sprog_id) . "</b></mark> " . findtekst('2334|kan du under', $sprog_id) . " <mark class=\"mark\"><b>" . findtekst('2335|Indlæs/udlæs kontoplan', $sprog_id) . "</b></mark> " . findtekst('2336|Importer mappingfil til offentlig standard kontoplan', $sprog_id) . " <a href=\"../systemdata/diverse.php?sektion=div_io\" style=\"color:blue;\">".findtekst('2157|her', $sprog_id)."</a></td></tr>"; // Inde i <mark class=\"mark\"><b>systemdata &#8658; diverse &#8658; Import & Export</b></mark> kan du under <mark class=\"mark\"><b>Indlæs/udlæs kontoplan</b></mark> Importer mappingfil til offentlig standard kontoplan
-    print "<tr><td colspan=\"3\" style=\"padding-bottom:5px;\">" . findtekst('2337|De kontonumre som <u>ikke</u> kan mappes ændres i', $sprog_id) . " <mark class=\"mark\"><b>" . findtekst('2338|systemdata &#8658 > kontoplan', $sprog_id) . "</b></mark>. " . findtekst('2339|Her kan man under det enkelte kontonummer tilføje standard kontonummer i feltet', $sprog_id) . " <mark class=\"mark\"><b>" . findtekst('2340|Map til', $sprog_id) . "</b></mark>.</td></tr>"; // tekst skal ændres!!! tilføjes tekster.csv
-    print "<tr><td colspan=\"3\" style=\"padding-bottom:5px;\">" . findtekst('2341|Sidst på siden kan man se en udskrift af Standard Kontoplan', $sprog_id) . ".</td></tr>";
+        print "<p>" . findtekst('2330|For at udskrive en csv skal de', $sprog_id) . " <b>$kontoantal_check</b> " . findtekst('2331|nedenstående kontonumre mappes til <u>standard kontonumre</u>.', $sprog_id) . "</p>";
+    }
+    print "<p>" . findtekst('2332|Inde i', $sprog_id) . " <mark class=\"mark\"><b>" . findtekst('2333|systemdata &#8658 > diverse &#8658 > Import & Export', $sprog_id) . "</b></mark> " . findtekst('2334|kan du under', $sprog_id) . " <mark class=\"mark\"><b>" . findtekst('2335|Indlæs/udlæs kontoplan', $sprog_id) . "</b></mark> " . findtekst('2336|Importer mappingfil til offentlig standard kontoplan', $sprog_id) . " <a href=\"../systemdata/diverse.php?sektion=div_io\" style=\"color:blue;\">".findtekst('2157|her', $sprog_id)."</a></p>";
+    print "<p>" . findtekst('2337|De kontonumre som <u>ikke</u> kan mappes ændres i', $sprog_id) . " <mark class=\"mark\"><b>" . findtekst('2338|systemdata &#8658 > kontoplan', $sprog_id) . "</b></mark>. " . findtekst('2339|Her kan man under det enkelte kontonummer tilføje standard kontonummer i feltet', $sprog_id) . " <mark class=\"mark\"><b>" . findtekst('2340|Map til', $sprog_id) . "</b></mark>.</p>";
+    print "<p>" . findtekst('2341|Sidst på siden kan man se en udskrift af Standard Kontoplan', $sprog_id) . ".</p>";
+    print "</div>";
 }
-print "</table>\n";
+
+
+if ($menu == 'S') {
+    print "</div>"; // close overflow wrapper
+}
 
 if ($standardKontoCheck) {
     print "<table style='width:100%;'>";
@@ -383,6 +430,11 @@ if ($standardKontoCheck) {
         print "</tr>";
     }
     print "</table>";
+}
+
+// Close S-mode scrollable section if applicable
+if ($menu == 'S') {
+    print "</div>"; // close overflow wrapper
 }
 
 $BOM = "\xEF\xBB\xBF"; // UTF-8 BOM
