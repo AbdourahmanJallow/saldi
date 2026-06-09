@@ -343,7 +343,7 @@ if ($menu == 'T') {
         print "</tbody></table>";
         print "</div>"; 
         
-        // ===== BLOCK CONTAINER PADDING: ENFORCES BLANK BUFFER ZONE SO TITLES DON'T HIDE UNDER THE FIXED BAR =====
+  
         print "<div style=\"padding-top: 50px; display: block; width: 100%;\">\n";
         
         print "<table width='100%' cellpadding='4' cellspacing='0' border='0' style='margin-top: 10px;'>";
