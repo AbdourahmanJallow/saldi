@@ -315,54 +315,54 @@ if ($menu == 'T') {
     print "</div>";
     print "<div class='content-noside'>";
     print "<table class='dataTable' border='0' cellspacing='1' width='100%'>";
-} elseif ($menu == 'S') {
-    $backUrl = "rapport.php?rapportart=regnskabbasis&regnaar=$regnaar&maaned_fra=$mf&aar_fra=$aar_fra&maaned_til=$mt&aar_til=$aar_til&dato_fra=$startdato&dato_til=$slutdato&konto_fra=$konto_fra&konto_til=$konto_til";
-    
-    $tilbage_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l-4 4 4 4M16 12H9"/></svg>';
-    
-    // Get CVR number
-    $query = db_select("select cvrnr from adresser where art='S'", __FILE__ . " linje " . __LINE__);
-    if ($row = db_fetch_array($query))
-        $cvrnr = $row['cvrnr'];
-    
-    // STICKY HEADER - Close button, title, empty space
-    print "<div style=\"position: sticky; top: 0; z-index: 100;\">";
-    print "<table bgcolor='#eeeef0' width='100%' cellpadding='0' cellspacing='4' border='0'><tbody>";
-    print "<tr>";
-    print "<td width=\"5%\" align='center'><a href=\"javascript:confirmClose('$backUrl','')\" accesskey=L style=\"text-decoration: none;\">";
-    print "<button class='headerbtn' type='button' style='$buttonStyle; width: 100%; display: flex; align-items: center; gap: 5px;' onMouseOver=\"this.style.cursor = 'pointer'\">";
-    print "$tilbage_icon " . findtekst('30|Tilbage', $sprog_id) . "</button></a></td>";
-    print "<td width='75%' align='center' style='$topStyle'>" . findtekst('895|Finansrapport', $sprog_id) . "</td>";
-    print "<td width='5%' align='center' style='$topStyle'>&nbsp;</td>";
-    print "</tr>";
-    print "</tbody></table>";
-    print "</div>";
-    
-    // Format dates
-    if ($startdato < 10) $startdato_fmt = "0" . (int)$startdato;
-    else $startdato_fmt = $startdato;
-    if ($slutdato < 10) $slutdato_fmt = "0" . (int)$slutdato;
-    else $slutdato_fmt = $slutdato;
-    
-    // NON-STICKY INFO SECTION - Left side: title & CVR, Right side: year & period
-    print "<table width='100%' cellpadding='4' cellspacing='0' border='0'>";
-    print "<tr>";
-    print "<td width='50%' valign='top'>";
-    print "<div class='saftTitle'>" . $newTitle . "</div>";
-    print "<div style='margin-top: 5px;' class='saftFirmName'>cvr: $cvrnr | $firmanavn</div>";
-    print "</td>";
-    print "<td width='50%' align='right' valign='top'>";
-    print "<div style='margin: 5px 4px 0 0;'>Regnskabsår: $regnaar</div>";
-    print "<div style='margin: 5px 4px 0 0;'>Periode: $startdato_fmt/$mf $aar_fra - $slutdato_fmt/$mt $aar_til</div>";
-    print "</td>";
-    print "</tr>";
-    print "<tr><td colspan='2'><hr></td></tr>";
-    print "</table>";
-    
-    // Scrollable data table
-    print "<div style=\"overflow-y: auto; max-height: calc(100vh - 128px);\">";
-    print "<table class='dataTable' border='0' cellspacing='1' width='100%'>";
-} else {
+    } elseif ($menu == 'S') {
+        $backUrl = "rapport.php?rapportart=regnskabbasis&regnaar=$regnaar&maaned_fra=$mf&aar_fra=$aar_fra&maaned_til=$mt&aar_til=$aar_til&dato_fra=$startdato&dato_til=$slutdato&konto_fra=$konto_fra&konto_til=$konto_til";
+        
+        $tilbage_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8l-4 4 4 4M16 12H9"/></svg>';
+        
+        // Get CVR number
+        $query = db_select("select cvrnr from adresser where art='S'", __FILE__ . " linje " . __LINE__);
+        if ($row = db_fetch_array($query))
+            $cvrnr = $row['cvrnr'];
+        
+        // STICKY HEADER - Pinning table to the top natively
+        // ===== HIGHLIGHT: ADDED BOX-SHADOW FOR SEPARATION AND REMOVED THE CUSTOM WRAPPER DIV BELOW =====
+        print "<div style=\"position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1);\">";
+        print "<table bgcolor='#eeeef0' width='100%' cellpadding='0' cellspacing='4' border='0'><tbody>";
+        print "<tr>";
+        print "<td width=\"5%\" align='center'><a href=\"javascript:confirmClose('$backUrl','')\" accesskey=L style=\"text-decoration: none;\">";
+        print "<button class='headerbtn' type='button' style='$buttonStyle; width: 100%; display: flex; align-items: center; gap: 5px;' onMouseOver=\"this.style.cursor = 'pointer'\">";
+        print "$tilbage_icon " . findtekst('30|Tilbage', $sprog_id) . "</button></a></td>";
+        print "<td width='75%' align='center' style='$topStyle'>" . findtekst('895|Finansrapport', $sprog_id) . "</td>";
+        print "<td width='5%' align='center' style='$topStyle'>&nbsp;</td>";
+        print "</tr>";
+        print "</tbody></table>";
+        print "</div>";
+        
+        // Format dates
+        if ($startdato < 10) $startdato_fmt = "0" . (int)$startdato;
+        else $startdato_fmt = $startdato;
+        if ($slutdato < 10) $slutdato_fmt = "0" . (int)$slutdato;
+        else $slutdato_fmt = $slutdato;
+        
+        // NON-STICKY INFO SECTION
+        print "<table width='100%' cellpadding='4' cellspacing='0' border='0'>";
+        print "<tr>";
+        print "<td width='50%' valign='top'>";
+        print "<div class='saftTitle'>" . $newTitle . "</div>";
+        print "<div style='margin-top: 5px;' class='saftFirmName'>cvr: $cvrnr | $firmanavn</div>";
+        print "</td>";
+        print "<td width='50%' align='right' valign='top'>";
+        print "<div style='margin: 5px 4px 0 0;'>Regnskabsår: $regnaar</div>";
+        print "<div style='margin: 5px 4px 0 0;'>Periode: $startdato_fmt/$mf $aar_fra - $slutdato_fmt/$mt $aar_til</div>";
+        print "</td>";
+        print "</tr>";
+        print "<tr><td colspan='2'><hr></td></tr>";
+        print "</table>";
+        
+        // Base data table
+        print "<table class='dataTable' border='0' cellspacing='1' width='100%'>";
+    } else {
     print "<table width=100% cellpadding=\"0\" cellspacing=\"1px\" border=\"0\" valign = \"top\" align='center'> ";
     print "<tr><td height=\"8\" colspan=\"2\">";
     print "<table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"3\" cellpadding=\"0\"><tbody>";
@@ -389,9 +389,9 @@ if ($menu == 'S' && $standardKontoCheck != true) {
 }
 
 
-if ($menu == 'S') {
-    print "</div>"; // close overflow wrapper
-}
+// if ($menu == 'S') {
+//     print "</div>"; // close overflow wrapper
+// }
 
 if ($standardKontoCheck) {
     print "<table style='width:100%;'>";
@@ -433,9 +433,9 @@ if ($standardKontoCheck) {
 }
 
 // Close S-mode scrollable section if applicable
-if ($menu == 'S') {
-    print "</div>"; // close overflow wrapper
-}
+// if ($menu == 'S') {
+//     print "</div>"; // close overflow wrapper
+// }
 
 $BOM = "\xEF\xBB\xBF"; // UTF-8 BOM
 // Here we write csv file
