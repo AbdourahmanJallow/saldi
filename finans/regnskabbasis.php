@@ -325,28 +325,28 @@ if ($menu == 'T') {
         if ($row = db_fetch_array($query))
             $cvrnr = $row['cvrnr'];
         
-        // STICKY HEADER - Pinning table to the top natively
-        // ===== HIGHLIGHT: ADDED BOX-SHADOW FOR SEPARATION AND REMOVED THE CUSTOM WRAPPER DIV BELOW =====
-        print "<div style=\"position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1);\">";
-        print "<table bgcolor='#eeeef0' width='100%' cellpadding='0' cellspacing='4' border='0'><tbody>";
-        print "<tr>";
-        print "<td width=\"5%\" align='center'><a href=\"javascript:confirmClose('$backUrl','')\" accesskey=L style=\"text-decoration: none;\">";
-        print "<button class='headerbtn' type='button' style='$buttonStyle; width: 100%; display: flex; align-items: center; gap: 5px;' onMouseOver=\"this.style.cursor = 'pointer'\">";
-        print "$tilbage_icon " . findtekst('30|Tilbage', $sprog_id) . "</button></a></td>";
-        print "<td width='75%' align='center' style='$topStyle'>" . findtekst('895|Finansrapport', $sprog_id) . "</td>";
-        print "<td width='5%' align='center' style='$topStyle'>&nbsp;</td>";
-        print "</tr>";
-        print "</tbody></table>";
-        print "</div>";
-        
         // Format dates
         if ($startdato < 10) $startdato_fmt = "0" . (int)$startdato;
         else $startdato_fmt = $startdato;
         if ($slutdato < 10) $slutdato_fmt = "0" . (int)$slutdato;
         else $slutdato_fmt = $slutdato;
+    
+        print "<div style=\"position: fixed; top: 0; left: auto; right: 0; display: block; width: 100%; z-index: 1000; background-color: #eeeef0; border-bottom: 1px solid #dadada; margin: 0; padding: 0;\">";
+        print "<table bgcolor='#eeeef0' width='100%' cellpadding='0' cellspacing='4' border='0'><tbody>";
+        print "<tr>";
+        print "<td width=\"5%\" align='center' style=\"\"><a href=\"javascript:confirmClose('$backUrl','')\" accesskey=L style=\"text-decoration: none;\">";
+        print "<button class='headerbtn' type='button' style='$buttonStyle; width: 100%; display: flex; align-items: center; gap: 5px;' onMouseOver=\"this.style.cursor = 'pointer'\">";
+        print "$tilbage_icon " . findtekst('30|Tilbage', $sprog_id) . "</button></a></td>";
+        print "<td width='95%' align='center' style='$topStyle'>" . findtekst('895|Finansrapport', $sprog_id) . "</td>";
+        // print "<td width='5%' align='center' style='$topStyle'>&nbsp;</td>";
+        print "</tr>";
+        print "</tbody></table>";
+        print "</div>"; 
         
-        // NON-STICKY INFO SECTION
-        print "<table width='100%' cellpadding='4' cellspacing='0' border='0'>";
+        // ===== BLOCK CONTAINER PADDING: ENFORCES BLANK BUFFER ZONE SO TITLES DON'T HIDE UNDER THE FIXED BAR =====
+        print "<div style=\"padding-top: 50px; display: block; width: 100%;\">\n";
+        
+        print "<table width='100%' cellpadding='4' cellspacing='0' border='0' style='margin-top: 10px;'>";
         print "<tr>";
         print "<td width='50%' valign='top'>";
         print "<div class='saftTitle'>" . $newTitle . "</div>";
@@ -360,7 +360,7 @@ if ($menu == 'T') {
         print "<tr><td colspan='2'><hr></td></tr>";
         print "</table>";
         
-        // Base data table
+        // Core data table initial tag
         print "<table class='dataTable' border='0' cellspacing='1' width='100%'>";
     } else {
     print "<table width=100% cellpadding=\"0\" cellspacing=\"1px\" border=\"0\" valign = \"top\" align='center'> ";
@@ -432,10 +432,9 @@ if ($standardKontoCheck) {
     print "</table>";
 }
 
-// Close S-mode scrollable section if applicable
-// if ($menu == 'S') {
-//     print "</div>"; // close overflow wrapper
-// }
+if ($menu == 'S') {
+    print "</table>"; // closes dataTable
+}
 
 $BOM = "\xEF\xBB\xBF"; // UTF-8 BOM
 // Here we write csv file
