@@ -330,35 +330,42 @@ if ($menu == 'T') {
         else $startdato_fmt = $startdato;
         if ($slutdato < 10) $slutdato_fmt = "0" . (int)$slutdato;
         else $slutdato_fmt = $slutdato;
-    
-        print "<div style=\"position: fixed; top: 0; left: auto; right: 0; display: block; width: 100%; z-index: 1000; background-color: #eeeef0; border-bottom: 1px solid #dadada; margin: 0; padding: 0;\">";
-        print "<table bgcolor='#eeeef0' width='100%' cellpadding='0' cellspacing='4' border='0'><tbody>";
+
+        print "<div style=\"position: fixed; top: 0; left: auto; right: 0; display: block; width: 100%; z-index: 1000; background-color: #eeeef0; margin: 0; padding: 0;\">";
+        
+        // Internal padding shell to align the elements cleanly with the rest of the application grid
+        print "<div style=\"padding: 8px 12px 8px 12px;\">";
+
+        // Action Top Menu Bar
+        print "<table bgcolor='#eeeef0' width='100%' cellpadding='0' cellspacing='4' border='0' style='margin: 0; width: 100%;'><tbody>";
         print "<tr>";
-        print "<td width=\"5%\" align='center' style=\"\"><a href=\"javascript:confirmClose('$backUrl','')\" accesskey=L style=\"text-decoration: none;\">";
-        print "<button class='headerbtn' type='button' style='$buttonStyle; width: 100%; display: flex; align-items: center; gap: 5px;' onMouseOver=\"this.style.cursor = 'pointer'\">";
+        print "<td width=\"5%\" align='left'><a href=\"javascript:confirmClose('$backUrl','')\" accesskey=L style=\"text-decoration: none;\">";
+        print "<button class='headerbtn' type='button' style='$buttonStyle; width: 100px; display: flex; align-items: center; justify-content: center; gap: 5px;' onMouseOver=\"this.style.cursor = 'pointer'\">";
         print "$tilbage_icon " . findtekst('30|Tilbage', $sprog_id) . "</button></a></td>";
-        print "<td width='95%' align='center' style='$topStyle'>" . findtekst('895|Finansrapport', $sprog_id) . "</td>";
-        // print "<td width='5%' align='center' style='$topStyle'>&nbsp;</td>";
+        print "<td width='95%' align='center' style='$topStyle; font-weight: bold;'>" . findtekst('895|Finansrapport', $sprog_id) . "</td>";
+        // print "<td width='5%'>&nbsp;</td>";
         print "</tr>";
         print "</tbody></table>";
-        print "</div>"; 
         
-  
-        print "<div style=\"padding-top: 50px; display: block; width: 100%;\">\n";
-        
-        print "<table width='100%' cellpadding='4' cellspacing='0' border='0' style='margin-top: 10px;'>";
+        // Customer Info Header Block
+        print "<table width='100%' cellpadding='4' cellspacing='0' border='0' style='margin: 0 0 0 0; background-color: #eeeef0;'>";
         print "<tr>";
-        print "<td width='50%' valign='top'>";
-        print "<div class='saftTitle'>" . $newTitle . "</div>";
-        print "<div style='margin-top: 5px;' class='saftFirmName'>cvr: $cvrnr | $firmanavn</div>";
+        print "<td width='50%' valign='top' align='left'>";
+        print "<div class='saftTitle' style='font-size: 1.4em;'>" . $newTitle . "</div>";
+        print "<div style='margin-top: 4px;' class='saftFirmName'>cvr: $cvrnr | $firmanavn</div>";
         print "</td>";
-        print "<td width='50%' align='right' valign='top'>";
-        print "<div style='margin: 5px 4px 0 0;'>Regnskabsår: $regnaar</div>";
-        print "<div style='margin: 5px 4px 0 0;'>Periode: $startdato_fmt/$mf $aar_fra - $slutdato_fmt/$mt $aar_til</div>";
+        print "<td width='50%' align='right' valign='top' style=' font-size: 0.95em;'>";
+        print "<div>Regnskabsår: $regnaar</div>";
+        print "<div style='margin-top: 4px;'>Periode: $startdato_fmt/$mf $aar_fra - $slutdato_fmt/$mt $aar_til</div>";
         print "</td>";
         print "</tr>";
-        print "<tr><td colspan='2'><hr></td></tr>";
+        print "<tr><td colspan='2'></td></tr>";
         print "</table>";
+        
+        print "</div>"; // Closes padding shell
+        print "</div>"; // Closes dynamic fixed container
+        
+        print "<div style=\"padding: 110px 12px 0 12px; display: block; width: 100%; box-sizing: border-box;\">";
         
         // Core data table initial tag
         print "<table class='dataTable' border='0' cellspacing='1' width='100%'>";
